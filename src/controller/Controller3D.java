@@ -1,20 +1,25 @@
 package controller;
 
 import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.awt.Point;
+import java.util.HashMap;
+import java.util.Map;
 
+import controller.animation.AnimationHandler;
 import controller.input.InputListeners;
 import controller.input.InputState;
+import controller.input.KeyHandler;
 import controller.input.RenderLoop;
-import model.dim3.Axis;
-import model.dim3.Cube;
-import model.dim3.Solid;
-import model.dim3.Tetrahedron;
+import controller.mode.Action;
+import controller.mode.CameraMovingHandler;
+import controller.mode.Mode;
+import controller.mode.ModeHandler;
 import renderer.Renderer3D;
+import transforms.Cubic;
+import transforms.Mat4;
+import transforms.Point3D;
 import transforms.Vec3D;
 import view.Panel;
-import view.Window;
 import world.Scene3D;
 
 public class Controller3D {
@@ -28,6 +33,12 @@ public class Controller3D {
     private Camera3D camera;
     private SceneBuilder sceneBuilder;
 
+    private Map<Mode, ModeHandler> modeHandlers;
+    private Mode activeMode;
+
+    private AnimationHandler animationHandler;
+    private KeyHandler keyHandler;
+
     public Controller3D(Panel panel) {
         this.panel = panel;
         this.camera = new Camera3D(new Vec3D(2, -10, 3), 10, 0.020);
@@ -35,9 +46,15 @@ public class Controller3D {
         this.renderer = new Renderer3D(panel.getRaster(), scene);
         this.renderLoop = new RenderLoop(this);
         this.sceneBuilder = new SceneBuilder(scene);
+        this.modeHandlers = new HashMap<Mode, ModeHandler>();
+        this.activeMode = Mode.CAMERA_MOVING;
+        initHandlers();
+
+        this.animationHandler = new AnimationHandler(sceneBuilder);
 
         input = new InputState();
         listeners = new InputListeners(input);
+        this.keyHandler = new KeyHandler(input);
         initListeners();
         initScene();
 
@@ -45,10 +62,14 @@ public class Controller3D {
         panel.repaint();
     }
 
-    private void initListeners() {
+    private void initListeners() {        
         panel.addMouseListener(listeners);
         panel.addKeyListener(listeners);
         panel.addMouseMotionListener(listeners);
+    }
+
+    private void initHandlers() {
+        modeHandlers.put(Mode.CAMERA_MOVING, new CameraMovingHandler(camera));
     }
 
     private void initScene() {
@@ -57,20 +78,28 @@ public class Controller3D {
     }
 
     public void update(double deltaTime) {
+        for (Mode mode : modeHandlers.keySet()) {
+            if(activeMode == mode) {
+                ModeHandler modeHandler = modeHandlers.get(mode);
+                modeHandler.update(input, deltaTime);
+            }
+        }
 
-        if(input.isKeyDown(KeyEvent.VK_W)) camera.forward(deltaTime);
-        if(input.isKeyDown(KeyEvent.VK_S)) camera.backward(deltaTime); 
-        if(input.isKeyDown(KeyEvent.VK_A)) camera.left(deltaTime); 
-        if(input.isKeyDown(KeyEvent.VK_D)) camera.right(deltaTime);
-        if(input.isKeyDown(KeyEvent.VK_SPACE)) camera.up(deltaTime); 
-        if(input.isKeyDown(KeyEvent.VK_SHIFT)) camera.down(deltaTime); 
+        if(Action.CHANGE_PROJECTION.isOn()) {
+            scene.changeProjection();
+            Action.CHANGE_PROJECTION.setOff();
+        }
 
-        if(input.isButtonDown(MouseEvent.BUTTON1)) camera.look(input.getDeltaX(), input.getDeltaY());
+        if(Action.CHANGE_CLIPPING.isOn()) {
+            renderer.changeClipping();
+            Action.CHANGE_CLIPPING.setOff();
+        }
+
+        animationHandler.handle(deltaTime);
+        keyHandler.handle();
 
         renderer.render(scene);
         panel.repaint();
-
-        input.resetMouseDelta();
     }
 
     public void clear() {

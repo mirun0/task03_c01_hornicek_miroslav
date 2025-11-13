@@ -6,7 +6,6 @@ import rasterize.Raster;
 import world.Scene3D;
 
 public class Renderer3D {
-
     private final Raster raster;
     private final SceneRenderer sceneRenderer;
 
@@ -18,5 +17,9 @@ public class Renderer3D {
     public void render(Scene3D scene) {
         raster.clear(Color.BLACK);
         sceneRenderer.renderScene(scene);
+    }
+
+    public void changeClipping() {
+        sceneRenderer.changeClipping();
     }
 }

@@ -7,7 +7,6 @@ import model.dim3.Solid;
 import transforms.Mat4;
 import transforms.Mat4OrthoRH;
 import transforms.Mat4PerspRH;
-import transforms.Mat4Scale;
 import view.Window;
 
 public class Scene3D {
@@ -18,19 +17,26 @@ public class Scene3D {
 
     private Camera3D camera;
     
+    private Mat4 perspectiveProjection;
+    private Mat4 orthogonalProjection;
 
     public Scene3D(Camera3D camera) {
         solids = new ArrayList<>();
         this.camera = camera;
 
-        projection = new Mat4PerspRH(
-            Math.toRadians(60),
-            (double) Window.HEIGHT / Window.WIDTH,
-            0.1, 100.0
-        );
+        perspectiveProjection = new Mat4PerspRH( Math.toRadians(60), (double) Window.HEIGHT / Window.WIDTH, 0.1, 100.0);
+        orthogonalProjection = new Mat4OrthoRH(15, 15, 0.1, 100);
 
-        //projection = new Mat4OrthoRH(15, 15, 0.1, 100);
+        projection = perspectiveProjection;
+    }
 
+    public void changeProjection() {
+        if(projection.equals(perspectiveProjection)) {
+            projection = orthogonalProjection;
+            return;
+        }
+
+        projection = perspectiveProjection;
     }
 
     public void addSolid(Solid solid) {

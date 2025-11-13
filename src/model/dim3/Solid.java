@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import transforms.Mat4;
-import transforms.Mat4Identity;
 import transforms.Mat4RotXYZ;
 import transforms.Mat4Scale;
 import transforms.Mat4Transl;
@@ -15,32 +14,44 @@ public abstract class Solid {
     protected List<Point3D> vertexBuffer;
     protected List<Integer> indexBuffer;
 
-    protected Mat4 transform;
+    protected Vec3D position;
+    protected Vec3D rotation;
+    protected Vec3D scale;
+
     protected int color;
 
     public Solid() {
         vertexBuffer = new ArrayList<Point3D>();
         indexBuffer = new ArrayList<Integer>();
 
-        transform = new Mat4Identity();
+        position = new Vec3D(0);
+        rotation = new Vec3D(0);
+        scale = new Vec3D(1);
     }
 
-    public void setPosition(double x, double y, double z) {
-        this.transform = new Mat4Transl(x, y, z);
+    public void setRotation(double rotX, double rotY, double rotZ) {
+        this.rotation = new Vec3D(rotX, rotY, rotZ);
     }
 
-    public void setRotation(double rotX, double rotY, double rotZ, double transZ) {
-        this.transform = new Mat4RotXYZ(rotX, rotY, rotZ)
-            .mul(new Mat4Transl(0, 0, transZ));
+    public void setPosition(double posX, double posY, double posZ) {
+        this.position = new Vec3D(posX, posY, posZ);
+    }
+
+    public void setScale(double scale) {
+        this.rotation = new Vec3D(scale);
     }
     
     public void setTransform(Vec3D position, Vec3D rotation, Vec3D scale) {
-        this.transform = new Mat4Scale(scale.getX(), scale.getY(), scale.getZ())
-            .mul(new Mat4RotXYZ(rotation.getX(), rotation.getY(), rotation.getZ()))
-            .mul(new Mat4Transl(position));
+        this.position = position;
+        this.rotation = rotation;
+        this.scale = scale;
     }
     
+    // TODO: tu by mozno bylo lepsi si uchovavat pouze transform a ne jednotlive vec3
     public Mat4 getTransform() {
+        Mat4 transform = new Mat4Scale(scale)
+            .mul(new Mat4RotXYZ(rotation.getX(), rotation.getY(), rotation.getZ()))
+            .mul(new Mat4Transl(position));
         return transform;
     }
 
