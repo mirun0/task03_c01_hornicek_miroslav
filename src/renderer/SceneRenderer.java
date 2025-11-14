@@ -154,7 +154,7 @@ public class SceneRenderer {
         return true;
     }
 
-    public void changeClipping() {
-        trivialClip = trivialClip ? false : true;
+    public void setClipping(boolean clipping) {
+        trivialClip = clipping ? false : true;
     }
 }

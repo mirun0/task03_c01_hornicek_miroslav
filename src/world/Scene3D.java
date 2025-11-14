@@ -30,13 +30,12 @@ public class Scene3D {
         projection = perspectiveProjection;
     }
 
-    public void changeProjection() {
-        if(projection.equals(perspectiveProjection)) {
-            projection = orthogonalProjection;
-            return;
+    public void setProjection(boolean projection) {
+        if(projection) {
+            this.projection = perspectiveProjection;
+        } else {
+            this.projection = orthogonalProjection;
         }
-
-        projection = perspectiveProjection;
     }
 
     public void addSolid(Solid solid) {

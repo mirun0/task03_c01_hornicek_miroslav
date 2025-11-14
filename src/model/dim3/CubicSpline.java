@@ -35,7 +35,7 @@ public class CubicSpline extends Solid {
             }
         }
 
-        vertexBuffer.add(p0);
+        /*vertexBuffer.add(p0);
         vertexBuffer.add(p1);
         vertexBuffer.add(p2);
         vertexBuffer.add(p3);
@@ -45,6 +45,6 @@ public class CubicSpline extends Solid {
         indexBuffer.add(vertexBuffer.indexOf(p1));
         indexBuffer.add(vertexBuffer.indexOf(p2));
         indexBuffer.add(vertexBuffer.indexOf(p2));
-        indexBuffer.add(vertexBuffer.indexOf(p3));
+        indexBuffer.add(vertexBuffer.indexOf(p3));*/
     }
 }

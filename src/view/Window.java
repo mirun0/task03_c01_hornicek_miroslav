@@ -19,6 +19,7 @@ public class Window extends JFrame {
         panel = new Panel(WIDTH, HEIGHT);
         add(panel);
         pack();
+        setLocationRelativeTo(null);
 
         panel.setFocusable(true);
         panel.grabFocus();

@@ -3,15 +3,17 @@ package controller.mode;
 import java.util.EnumMap;
 import java.util.Map;
 
-public enum Action {
-    CHANGE_PROJECTION,
-    CHANGE_CLIPPING;
+import renderer.ui.Toolable;
+
+public enum Action implements Toolable {
+    PROJECTION, // true - perspective, false - orthogonal
+    CLIPPING; // true - full clipping, false - trivial clipping
 
     private static Map<Action, Boolean> actionStates = new EnumMap<>(Action.class);
 
     static {
         for (Action a : Action.values()) {
-            actionStates.put(a, false);
+            actionStates.put(a, true);
         }
     }
 

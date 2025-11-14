@@ -1,5 +1,7 @@
 package controller.mode;
 
-public enum Mode {
+import renderer.ui.Toolable;
+
+public enum Mode implements Toolable {
     CAMERA_MOVING;
 }

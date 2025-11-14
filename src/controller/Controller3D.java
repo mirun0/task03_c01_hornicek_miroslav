@@ -20,6 +20,7 @@ import transforms.Mat4;
 import transforms.Point3D;
 import transforms.Vec3D;
 import view.Panel;
+import view.Window;
 import world.Scene3D;
 
 public class Controller3D {
@@ -85,20 +86,22 @@ public class Controller3D {
             }
         }
 
-        if(Action.CHANGE_PROJECTION.isOn()) {
-            scene.changeProjection();
-            Action.CHANGE_PROJECTION.setOff();
+        if(Action.PROJECTION.isOn()) {
+            scene.setProjection(true);
+        } else {
+            scene.setProjection(false);
         }
 
-        if(Action.CHANGE_CLIPPING.isOn()) {
-            renderer.changeClipping();
-            Action.CHANGE_CLIPPING.setOff();
+        if(Action.CLIPPING.isOn()) {
+            renderer.setClipping(true);
+        } else {
+            renderer.setClipping(false);
         }
 
         animationHandler.handle(deltaTime);
         keyHandler.handle();
 
-        renderer.render(scene);
+        renderer.render(scene, activeMode, Window.WIDTH, Window.HEIGHT);
         panel.repaint();
     }
 

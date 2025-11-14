@@ -34,11 +34,11 @@ public class KeyHandler {
             if(validActionKeys.contains(keyCode)) {
                 switch (keyCode) {
                     case KeyEvent.VK_P: {
-                        Action.CHANGE_PROJECTION.setOn();
+                        Action.PROJECTION.toggle();
                         break;
                     }
                     case KeyEvent.VK_C: {
-                        Action.CHANGE_CLIPPING.setOn();
+                        Action.CLIPPING.toggle();
                         break;
                     }
                     default:
