@@ -1,4 +1,4 @@
-package model.dim3;
+package model;
 
 import transforms.Cubic;
 import transforms.Mat4;

@@ -100,7 +100,7 @@ public class Camera {
 	 *            distance between the eye (camera origin) and the observer
 	 *            position in the 3rd person camera mode
 	 * @param firstPerson
-	 *            boolean flag indicating 1st (true) / 3rd (false) person camera
+	 *            / 3rd  boolean flag indicating 1st (true)(false) person camera
 	 *            mode
 	 */
 	public Camera(final Vec3D pos, final double azimuth, final double zenith,

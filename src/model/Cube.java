@@ -1,10 +1,10 @@
-package model.dim3;
+package model;
 
 import java.util.Arrays;
 
 import transforms.Point3D;
 
-public class Cube extends Solid {
+public class Cube extends Solid implements Transformable {
     
     public Cube() {
         vertexBuffer.addAll(Arrays.asList(

@@ -1,10 +1,10 @@
-package model.dim3;
+package model;
 
 import java.util.Arrays;
 
 import transforms.Point3D;
 
-public class Tetrahedron extends Solid {
+public class Tetrahedron extends Solid implements Transformable {
     
     public Tetrahedron() {
         vertexBuffer.addAll(Arrays.asList(

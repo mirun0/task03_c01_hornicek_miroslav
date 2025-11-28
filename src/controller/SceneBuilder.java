@@ -1,11 +1,11 @@
 package controller;
 
-import model.dim3.Axis;
-import model.dim3.CubicSpline;
-import model.dim3.Cube;
-import model.dim3.Cylinder;
-import model.dim3.Solid;
-import model.dim3.Tetrahedron;
+import model.Axis;
+import model.Cube;
+import model.CubicSpline;
+import model.Cylinder;
+import model.Solid;
+import model.Tetrahedron;
 import transforms.Cubic;
 import transforms.Point3D;
 import transforms.Vec3D;
@@ -32,7 +32,7 @@ public class SceneBuilder {
             new Vec3D(5, 5, 5), 
             new Vec3D(0, 0, 0), 
             new Vec3D(1));
-        tetra.setColor(0xff00ff);
+        //tetra.setColor(0xff00ff);
         scene.addSolid(tetra);
 
         animatedCube = new Cube();
@@ -40,12 +40,12 @@ public class SceneBuilder {
             new Vec3D(0, 0, 0), 
             new Vec3D(0, Math.toRadians(45), 0), 
             new Vec3D(1));
-        animatedCube.setColor(0xffffff);
+        //animatedCube.setColor(0xffffff);
         scene.addSolid(animatedCube);
 
         Solid cylinder = new Cylinder(10, 1, 3);
         cylinder.setTransform(new Vec3D(0, 5, 0), new Vec3D(0), new Vec3D(1));
-        cylinder.setColor(0xffff00);
+        //cylinder.setColor(0xffff00);
         scene.addSolid(cylinder);
 
         Solid curve = new CubicSpline(Cubic.BEZIER,
@@ -55,13 +55,13 @@ public class SceneBuilder {
             new Point3D(4, 5, 10),
             80
         );
-        curve.setColor(0xff0ff0);
+        //curve.setColor(0xff0ff0);
         scene.addSolid(curve);
     }
 
     private void buildAxes() {
         Solid axisX = new Axis();
-        axisX.setTransform(new Vec3D(0), new Vec3D(0),new Vec3D(50));
+        axisX.setTransform(new Vec3D(0), new Vec3D(0), new Vec3D(50));
         axisX.setColor(0xff0000);
         scene.addSolid(axisX);
 

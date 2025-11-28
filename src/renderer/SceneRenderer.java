@@ -1,13 +1,20 @@
 package renderer;
 
-import model.dim3.Solid;
+import java.awt.Button;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+
+import controller.input.InputState;
+import controller.mode.Action;
+import model.Solid;
+import model.Transformable;
 import rasterize.LineRasterizerTrivial;
 import rasterize.Raster;
 import transforms.Mat4;
-import transforms.Mat4Identity;
 import transforms.Point2D;
 import transforms.Point3D;
 import transforms.Vec3D;
+import utils.MathUtils;
 import world.Scene3D;
 
 public class SceneRenderer {
@@ -18,10 +25,16 @@ public class SceneRenderer {
 
     private boolean trivialClip;
 
-    public SceneRenderer(Raster raster) {
+    private Solid selectedSolid;
+    private Solid activeSolid;
+
+    private InputState input;
+
+    public SceneRenderer(Raster raster, InputState input) {
         this.raster = raster;
         this.lineRasterizer = new LineRasterizerTrivial(raster);
         zBuffer = new double[raster.getWidth()][raster.getHeight()];
+        this.input = input;
     }
 
 
@@ -31,8 +44,8 @@ public class SceneRenderer {
                 zBuffer[x][y] = Double.POSITIVE_INFINITY;
             }
         }
+        boolean solidChanged = false;
         for (Solid solid : scene.getSolids()) {
-
             lineRasterizer.setColor(solid.getColor());
             Mat4 mvp = solid.getTransform()
                 .mul(scene.getCamera().getViewMatrix())
@@ -62,13 +75,56 @@ public class SceneRenderer {
                 Point2D s1 = toScreen(n1);
                 Point2D s2 = toScreen(n2);
 
-                //System.out.println("p1: " + s1.getX() + " " + s1.getY());
-                //System.out.println("p2: " + s2.getX() + " " + s2.getY());
+                if(Action.POINT_SELECTION.isOn()) {
+                    if(closeToPoint(s1, input.getMouseX(), input.getMouseY()) || closeToPoint(s2, input.getMouseX(), input.getMouseY())) {
+                        if(solid instanceof Transformable && !solidChanged) {
+                            activeSolid = solid;
+                            solidChanged = true;
+                        }
+                    } else if(!solidChanged) {
+                        activeSolid = null;
+                    }
+
+                    if(input.isButtonDown(MouseEvent.BUTTON1) && selectedSolid == null && activeSolid != null) {
+                        selectedSolid = activeSolid;
+                        selectedSolid.setScale(2);
+                    }
+
+                    if(input.isKeyDown(KeyEvent.VK_ESCAPE) && selectedSolid != null) {
+                        selectedSolid = null;
+                    }
+
+                    if(activeSolid != null) {
+                        drawPoint(s1, solid.getColor());
+                        drawPoint(s2, solid.getColor());
+                    }
+
+                    if(selectedSolid != null && selectedSolid == solid) {
+                        lineRasterizer.setColor(0xFFFF00);
+                    }
+                }
+
                 lineRasterizer.rasterize(
                     (int)s1.getX(), (int)s1.getY(), n1.getZ(), 
                     (int)s2.getX(), (int)s2.getY(), n2.getZ(), zBuffer);
+
+                lineRasterizer.setColor(solid.getColor());
+            }
+            solidChanged = false;
+        }
+    }
+
+    private void drawPoint(Point2D point, int color) {
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dy = -2; dy <= 2; dy++) {
+                raster.setPixel((int)point.getX() + dx, (int)point.getY() + dy, color);
             }
         }
+    }
+
+    public static boolean closeToPoint(Point2D point, double x, double y) {
+        double l = MathUtils.length(x, y, point.getX(), point.getY());
+        return l <= 10;
     }
 
     private boolean isInsideClipVolume(Point3D p) {

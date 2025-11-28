@@ -2,6 +2,7 @@ package renderer;
 
 import java.awt.Color;
 
+import controller.input.InputState;
 import controller.mode.Mode;
 import rasterize.Raster;
 import renderer.ui.UIRenderer;
@@ -13,10 +14,10 @@ public class Renderer3D {
     private final SceneRenderer sceneRenderer;
     private final UIRenderer uiRenderer;
 
-    public Renderer3D(Raster raster, Scene3D scene) {
+    public Renderer3D(Raster raster, Scene3D scene, InputState inputState) {
         this.raster = raster;
 
-        this.sceneRenderer = new SceneRenderer(raster);
+        this.sceneRenderer = new SceneRenderer(raster, inputState);
         this.uiRenderer = new UIRenderer(raster.getGraphics());
     }
 

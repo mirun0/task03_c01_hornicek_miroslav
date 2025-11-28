@@ -1,4 +1,4 @@
-package model.dim3;
+package model;
 
 import java.util.Arrays;
 

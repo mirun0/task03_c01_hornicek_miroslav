@@ -1,7 +1,6 @@
 package controller;
 
 import java.awt.Color;
-import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,9 +14,6 @@ import controller.mode.CameraMovingHandler;
 import controller.mode.Mode;
 import controller.mode.ModeHandler;
 import renderer.Renderer3D;
-import transforms.Cubic;
-import transforms.Mat4;
-import transforms.Point3D;
 import transforms.Vec3D;
 import view.Panel;
 import view.Window;
@@ -44,7 +40,8 @@ public class Controller3D {
         this.panel = panel;
         this.camera = new Camera3D(new Vec3D(2, -10, 3), 10, 0.020);
         this.scene = new Scene3D(camera);
-        this.renderer = new Renderer3D(panel.getRaster(), scene);
+        input = new InputState();
+        this.renderer = new Renderer3D(panel.getRaster(), scene, input);
         this.renderLoop = new RenderLoop(this);
         this.sceneBuilder = new SceneBuilder(scene);
         this.modeHandlers = new HashMap<Mode, ModeHandler>();
@@ -52,8 +49,6 @@ public class Controller3D {
         initHandlers();
 
         this.animationHandler = new AnimationHandler(sceneBuilder);
-
-        input = new InputState();
         listeners = new InputListeners(input);
         this.keyHandler = new KeyHandler(input);
         initListeners();

@@ -7,7 +7,8 @@ import renderer.ui.Toolable;
 
 public enum Action implements Toolable {
     PROJECTION, // true - perspective, false - orthogonal
-    CLIPPING; // true - full clipping, false - trivial clipping
+    CLIPPING, // true - full clipping, false - trivial clipping
+    POINT_SELECTION;
 
     private static Map<Action, Boolean> actionStates = new EnumMap<>(Action.class);
 
@@ -15,6 +16,7 @@ public enum Action implements Toolable {
         for (Action a : Action.values()) {
             actionStates.put(a, true);
         }
+        POINT_SELECTION.setOff();
     }
 
     public boolean isOn() {

@@ -26,7 +26,7 @@ public class KeyHandler {
         this.modChanged = false;
 
         validModeKeys.addAll(Arrays.asList(KeyEvent.VK_M));
-        validActionKeys.addAll(Arrays.asList(KeyEvent.VK_P, KeyEvent.VK_C));
+        validActionKeys.addAll(Arrays.asList(KeyEvent.VK_P, KeyEvent.VK_C, KeyEvent.VK_O));
     }
 
     public void handle() {
@@ -36,13 +36,15 @@ public class KeyHandler {
                     case KeyEvent.VK_P: {
                         Action.PROJECTION.toggle();
                         break;
-                    }
-                    case KeyEvent.VK_C: {
+                    } case KeyEvent.VK_C: {
                         Action.CLIPPING.toggle();
                         break;
-                    }
-                    default:
+                    } case KeyEvent.VK_O: {
+                        Action.POINT_SELECTION.toggle();
                         break;
+                    } default: {
+                        break;
+                    }
                 }
             }
 

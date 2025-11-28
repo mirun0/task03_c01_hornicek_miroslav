@@ -1,8 +1,8 @@
-package model.dim3;
+package model;
 
 import transforms.Point3D;
 
-public class Cylinder extends Solid {
+public class Cylinder extends Solid implements Transformable {
     
     public Cylinder(int segments, double radius, double height) {
         if (segments < 3) {

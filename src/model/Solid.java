@@ -1,4 +1,4 @@
-package model.dim3;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ public abstract class Solid {
         vertexBuffer = new ArrayList<Point3D>();
         indexBuffer = new ArrayList<Integer>();
 
+        color = 0xFFFFFF;
         position = new Vec3D(0);
         rotation = new Vec3D(0);
         scale = new Vec3D(1);
@@ -38,7 +39,7 @@ public abstract class Solid {
     }
 
     public void setScale(double scale) {
-        this.rotation = new Vec3D(scale);
+        this.scale = new Vec3D(scale);
     }
     
     public void setTransform(Vec3D position, Vec3D rotation, Vec3D scale) {

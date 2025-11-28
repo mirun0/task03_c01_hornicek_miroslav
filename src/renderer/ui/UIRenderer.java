@@ -36,11 +36,32 @@ public class UIRenderer {
         String clipping = "[C]lipping: Full/Trivial";
         printAction(Action.CLIPPING, clipping, x, y, spacing);
 
+        x += fm.stringWidth(clipping) - 1 + spacing;
+        String selection = "[O]bjectSelection: On/Off";
+        printAction(Action.POINT_SELECTION, selection, x, y, spacing);
+
         x = 5;
         y = h - 25;
         g.setColor(Color.LIGHT_GRAY);
         g.setFont(font);
         g.drawString("Move: WSAD  Look: Mouse dragging", x, y);
+
+        x = 5;
+        y = h - 45;
+
+        if(Action.POINT_SELECTION.isOn()) {
+            printTransformHelp(x, y, w);
+        }
+    }
+
+    private void printTransformHelp(int x, int y, int w) {
+        g.setColor(Color.DARK_GRAY);
+        g.fillRect(0, y - 15, w, 20);
+
+        g.setColor(Color.WHITE);
+        g.drawString("J: Scale  K: Rotate  L: Transform", x, y);
+
+        // TODO: predelat action na point select na mode
     }
 
     private void printAction(Action action, String fullString, int x, int y, int spacing) {

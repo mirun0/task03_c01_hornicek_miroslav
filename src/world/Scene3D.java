@@ -3,7 +3,7 @@ package world;
 import java.util.ArrayList;
 
 import controller.Camera3D;
-import model.dim3.Solid;
+import model.Solid;
 import transforms.Mat4;
 import transforms.Mat4OrthoRH;
 import transforms.Mat4PerspRH;
@@ -24,7 +24,7 @@ public class Scene3D {
         solids = new ArrayList<>();
         this.camera = camera;
 
-        perspectiveProjection = new Mat4PerspRH( Math.toRadians(60), (double) Window.HEIGHT / Window.WIDTH, 0.1, 100.0);
+        perspectiveProjection = new Mat4PerspRH(Math.toRadians(60), (double) Window.HEIGHT / Window.WIDTH, 0.1, 100.0);
         orthogonalProjection = new Mat4OrthoRH(15, 15, 0.1, 100);
 
         projection = perspectiveProjection;
