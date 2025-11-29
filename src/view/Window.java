@@ -12,7 +12,7 @@ public class Window extends JFrame {
 
     public Window() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle("task 03");
+        setTitle("Blender z temu");
         setResizable(false);
         setVisible(true);
 

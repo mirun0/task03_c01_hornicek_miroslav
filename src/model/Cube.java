@@ -32,5 +32,7 @@ public class Cube extends Solid implements Transformable {
             2, 6,
             3, 7
         ));
+
+        calcPivot();
     }
 }

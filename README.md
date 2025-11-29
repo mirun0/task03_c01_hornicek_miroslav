@@ -4,9 +4,9 @@
 
 Vytvořte program pro transformaci a zobrazení drátového modelu jednoduché grafické prostorové scény složené minimálně ze tří 3D těles, alespoň jedno z každé skupiny
 [DONE]  - Krychle, čtyřstěn
-[DONE]      - Válec, kužel, netriviální více-boký hranol, komolý …
-[DONE]      - Křivky, plochy
-[v kodu je, bez ovladani zatim] Implementujte modelovací transformace posunutí, otočení a změnu měřítka pro jednotlivé objekty scény.
+[DONE]  - Válec, kužel, netriviální více-boký hranol, komolý …
+[DONE]  - Křivky, plochy
+[DONE] Implementujte modelovací transformace posunutí, otočení a změnu měřítka pro jednotlivé objekty scény.
 [DONE] Implementujte perspektivní i paralelní projekci, tzv. transformaci zobrazovacího modelu.
 [DONE] Implementujte pohledovou transformaci, tzv. kameru.
 [DONE] Soustřeďte se na správné ořezávání jednotlivých hran zobrazovacím objemem, stačí tzv. přísné ořezání, tj. zahazování hran, které částečně leží mimo zobrazovací objem.

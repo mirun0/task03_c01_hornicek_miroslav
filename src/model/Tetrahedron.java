@@ -22,5 +22,7 @@ public class Tetrahedron extends Solid implements Transformable {
             1, 3,
             2, 3
         ));
+
+        calcPivot();
     }
 }

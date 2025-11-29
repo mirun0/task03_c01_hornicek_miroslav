@@ -25,8 +25,8 @@ public class KeyHandler {
         this.activeMode = Mode.CAMERA_MOVING;
         this.modChanged = false;
 
-        validModeKeys.addAll(Arrays.asList(KeyEvent.VK_M));
-        validActionKeys.addAll(Arrays.asList(KeyEvent.VK_P, KeyEvent.VK_C, KeyEvent.VK_O));
+        validModeKeys.addAll(Arrays.asList(KeyEvent.VK_T));
+        validActionKeys.addAll(Arrays.asList(KeyEvent.VK_P, KeyEvent.VK_C));
     }
 
     public void handle() {
@@ -39,9 +39,6 @@ public class KeyHandler {
                     } case KeyEvent.VK_C: {
                         Action.CLIPPING.toggle();
                         break;
-                    } case KeyEvent.VK_O: {
-                        Action.POINT_SELECTION.toggle();
-                        break;
                     } default: {
                         break;
                     }
@@ -50,7 +47,14 @@ public class KeyHandler {
 
             if(validModeKeys.contains(keyCode)) {
                 modChanged = true;
-                // switch(keyCode)
+                switch(keyCode) {
+                    case KeyEvent.VK_T: {
+                        activeMode = activeMode == Mode.OBJECT_TRANSFORM ? Mode.CAMERA_MOVING : Mode.OBJECT_TRANSFORM;
+                        break;
+                    } default: {
+                        break;
+                    }
+                }
             }
         }
 

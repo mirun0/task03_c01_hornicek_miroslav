@@ -42,6 +42,14 @@ public class Scene3D {
         solids.add(solid);
     }
 
+    public void removeSolid(Solid solid) {
+        solids.remove(solid);
+    }
+
+    public boolean containsSolid(Solid solid) {
+        return solids.contains(solid);
+    }
+
     public int size() {
         return solids.size();
     }

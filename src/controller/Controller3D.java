@@ -13,6 +13,7 @@ import controller.mode.Action;
 import controller.mode.CameraMovingHandler;
 import controller.mode.Mode;
 import controller.mode.ModeHandler;
+import controller.mode.ObjectTransformHandler;
 import renderer.Renderer3D;
 import transforms.Vec3D;
 import view.Panel;
@@ -66,6 +67,7 @@ public class Controller3D {
 
     private void initHandlers() {
         modeHandlers.put(Mode.CAMERA_MOVING, new CameraMovingHandler(camera));
+        modeHandlers.put(Mode.OBJECT_TRANSFORM, new ObjectTransformHandler(renderer, scene));
     }
 
     private void initScene() {
@@ -74,11 +76,18 @@ public class Controller3D {
     }
 
     public void update(double deltaTime) {
+        activeMode = keyHandler.getActiveMode();
         for (Mode mode : modeHandlers.keySet()) {
             if(activeMode == mode) {
                 ModeHandler modeHandler = modeHandlers.get(mode);
                 modeHandler.update(input, deltaTime);
             }
+        }
+        if(keyHandler.isModChanged()) {
+            if(activeMode == Mode.CAMERA_MOVING) {
+                ((ObjectTransformHandler)modeHandlers.get(Mode.OBJECT_TRANSFORM)).clear();
+            }
+            keyHandler.setModChanged(false);
         }
 
         if(Action.PROJECTION.isOn()) {

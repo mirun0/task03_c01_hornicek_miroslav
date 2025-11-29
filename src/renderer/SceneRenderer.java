@@ -1,20 +1,18 @@
 package renderer;
 
-import java.awt.Button;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import controller.input.InputState;
-import controller.mode.Action;
+import controller.mode.Mode;
 import model.Solid;
-import model.Transformable;
 import rasterize.LineRasterizerTrivial;
 import rasterize.Raster;
 import transforms.Mat4;
 import transforms.Point2D;
 import transforms.Point3D;
+import transforms.Vec2D;
 import transforms.Vec3D;
-import utils.MathUtils;
 import world.Scene3D;
 
 public class SceneRenderer {
@@ -26,26 +24,32 @@ public class SceneRenderer {
     private boolean trivialClip;
 
     private Solid selectedSolid;
+    private Point2D selectedSolidPivot;
     private Solid activeSolid;
 
-    private InputState input;
+    private Vec2D mousePos;
+
+    private HashMap<Solid, ArrayList<Point2D>> solidPoints;
 
     public SceneRenderer(Raster raster, InputState input) {
         this.raster = raster;
         this.lineRasterizer = new LineRasterizerTrivial(raster);
         zBuffer = new double[raster.getWidth()][raster.getHeight()];
-        this.input = input;
+
+        this.solidPoints = new HashMap<>();
+        this.selectedSolidPivot = null;
+        this.mousePos = new Vec2D();
     }
 
-
-    public void renderScene(Scene3D scene) {
+    public void renderScene(Scene3D scene, Mode activeMode) {
+        solidPoints.clear();
         for (int x = 0; x < raster.getWidth(); x++) {
             for (int y = 0; y < raster.getHeight(); y++) {
                 zBuffer[x][y] = Double.POSITIVE_INFINITY;
             }
         }
-        boolean solidChanged = false;
         for (Solid solid : scene.getSolids()) {
+            solidPoints.put(solid, new ArrayList<>());
             lineRasterizer.setColor(solid.getColor());
             Mat4 mvp = solid.getTransform()
                 .mul(scene.getCamera().getViewMatrix())
@@ -75,34 +79,20 @@ public class SceneRenderer {
                 Point2D s1 = toScreen(n1);
                 Point2D s2 = toScreen(n2);
 
-                if(Action.POINT_SELECTION.isOn()) {
-                    if(closeToPoint(s1, input.getMouseX(), input.getMouseY()) || closeToPoint(s2, input.getMouseX(), input.getMouseY())) {
-                        if(solid instanceof Transformable && !solidChanged) {
-                            activeSolid = solid;
-                            solidChanged = true;
-                        }
-                    } else if(!solidChanged) {
-                        activeSolid = null;
-                    }
+                solidPoints.get(solid).add(s1);
+                solidPoints.get(solid).add(s2);
 
-                    if(input.isButtonDown(MouseEvent.BUTTON1) && selectedSolid == null && activeSolid != null) {
-                        selectedSolid = activeSolid;
-                        selectedSolid.setScale(2);
-                    }
-
-                    if(input.isKeyDown(KeyEvent.VK_ESCAPE) && selectedSolid != null) {
-                        selectedSolid = null;
-                    }
-
-                    if(activeSolid != null) {
-                        drawPoint(s1, solid.getColor());
-                        drawPoint(s2, solid.getColor());
-                    }
-
-                    if(selectedSolid != null && selectedSolid == solid) {
-                        lineRasterizer.setColor(0xFFFF00);
-                    }
+                if(selectedSolid == solid) {
+                    drawPoint(s1, 0xFFA500);
+                    drawPoint(s2, 0xFFA500);
                 }
+
+                if(selectedSolid == solid && selectedSolidPivot == null && solid.getPivot() != null) {
+                    selectedSolidPivot = toScreen(toNDC(solid.getPivot().mul(mvp)));
+                }
+
+                if(solid == activeSolid) lineRasterizer.setColor(0xFFA500);
+                if(solid == selectedSolid) lineRasterizer.setColor(0xFFA500);
 
                 lineRasterizer.rasterize(
                     (int)s1.getX(), (int)s1.getY(), n1.getZ(), 
@@ -110,8 +100,51 @@ public class SceneRenderer {
 
                 lineRasterizer.setColor(solid.getColor());
             }
-            solidChanged = false;
         }
+
+        if(selectedSolid != null && selectedSolidPivot != null) {
+            drawPoint(selectedSolidPivot, 0x0FAA00);
+        }
+
+        // mousePos != null urcuje zda se transformuje 
+        if(mousePos != null && selectedSolid != null && selectedSolidPivot != null) {
+            lineRasterizer.setColor(0x181818);
+            lineRasterizer.rasterize((int)mousePos.getX(), (int)mousePos.getY(), 0, 
+            (int)selectedSolidPivot.getX(), (int)selectedSolidPivot.getY(), 0, zBuffer);
+        }
+    }
+
+    public Solid getSelectedSolid() {
+        return selectedSolid;
+    }
+
+    public Solid getActiveSolid() {
+        return activeSolid;
+    }
+
+    public void setActiveSolid(Solid s) { 
+        this.activeSolid = s;
+    }
+
+    public void setSelectedSolid(Solid s) { 
+        this.selectedSolid = s;
+        setSelectedSolidPivot(null);
+    }
+
+    public Point2D getSelectedSolidPivot() {
+        return selectedSolidPivot;
+    }
+
+    public void setSelectedSolidPivot(Point2D selectedSolidPivot) {
+        this.selectedSolidPivot = selectedSolidPivot;
+    }
+
+    public HashMap<Solid, ArrayList<Point2D>> getSolidPoints2D() {
+        return solidPoints;
+    }
+
+    public void setTransformingLine(Vec2D mousePos) {
+        this.mousePos = mousePos;
     }
 
     private void drawPoint(Point2D point, int color) {
@@ -120,11 +153,6 @@ public class SceneRenderer {
                 raster.setPixel((int)point.getX() + dx, (int)point.getY() + dy, color);
             }
         }
-    }
-
-    public static boolean closeToPoint(Point2D point, double x, double y) {
-        double l = MathUtils.length(x, y, point.getX(), point.getY());
-        return l <= 10;
     }
 
     private boolean isInsideClipVolume(Point3D p) {

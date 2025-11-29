@@ -43,5 +43,7 @@ public class Cylinder extends Solid implements Transformable {
             indexBuffer.add(bottom);
             indexBuffer.add(top);
         }
+
+        calcPivot();
     }
 }

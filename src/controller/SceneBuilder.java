@@ -60,19 +60,19 @@ public class SceneBuilder {
     }
 
     private void buildAxes() {
-        Solid axisX = new Axis();
+        Solid axisX = new Axis(false);
         axisX.setTransform(new Vec3D(0), new Vec3D(0), new Vec3D(50));
-        axisX.setColor(0xff0000);
+        axisX.setColor(0xf63652); // e27c8c
         scene.addSolid(axisX);
 
-        Solid axisY = new Axis();
+        Solid axisY = new Axis(false);
         axisY.setTransform(new Vec3D( 0), new Vec3D(0, 0, Math.toRadians(90)), new Vec3D(50));
-        axisY.setColor(0x00ff00);
+        axisY.setColor(0x70a41c); // a7d164
         scene.addSolid(axisY);
 
-        Solid axisZ = new Axis();
+        Solid axisZ = new Axis(false);
         axisZ.setTransform(new Vec3D(0), new Vec3D(0, -Math.toRadians(90), 0), new Vec3D(50));
-        axisZ.setColor(0x0000ff);
+        axisZ.setColor(0x2f84e3); // 77aae2
         scene.addSolid(axisZ);
     }
 }

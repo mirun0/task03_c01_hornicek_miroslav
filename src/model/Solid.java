@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import transforms.Mat3;
 import transforms.Mat4;
 import transforms.Mat4RotXYZ;
 import transforms.Mat4Scale;
@@ -18,13 +19,19 @@ public abstract class Solid {
     protected Vec3D rotation;
     protected Vec3D scale;
 
+    protected Point3D pivot;
+
+    public Point3D getPivot() {
+        return pivot;
+    }
+
     protected int color;
 
     public Solid() {
         vertexBuffer = new ArrayList<Point3D>();
         indexBuffer = new ArrayList<Integer>();
 
-        color = 0xFFFFFF;
+        color = 0x8e8f91;
         position = new Vec3D(0);
         rotation = new Vec3D(0);
         scale = new Vec3D(1);
@@ -38,8 +45,16 @@ public abstract class Solid {
         this.position = new Vec3D(posX, posY, posZ);
     }
 
+    public void setPosition(Vec3D position) {
+        this.position = position;
+    }
+
     public void setScale(double scale) {
         this.scale = new Vec3D(scale);
+    }
+
+    public void setScaleX(double scale) {
+        this.scale = new Vec3D(scale, this.scale.getY(), this.scale.getZ());
     }
     
     public void setTransform(Vec3D position, Vec3D rotation, Vec3D scale) {
@@ -47,8 +62,17 @@ public abstract class Solid {
         this.rotation = rotation;
         this.scale = scale;
     }
+
+    public void setTransform(Mat3 transform) {
+        this.position = transform.getRow(0);
+        this.rotation = transform.getRow(1);
+        this.scale = transform.getRow(2);
+    }
+
+    public Mat3 getTransformVectors() {
+        return new Mat3(position, rotation, scale);
+    }
     
-    // TODO: tu by mozno bylo lepsi si uchovavat pouze transform a ne jednotlive vec3
     public Mat4 getTransform() {
         Mat4 transform = new Mat4Scale(scale)
             .mul(new Mat4RotXYZ(rotation.getX(), rotation.getY(), rotation.getZ()))
@@ -70,5 +94,22 @@ public abstract class Solid {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public void calcPivot() {
+        double minX = Double.POSITIVE_INFINITY, maxX = Double.NEGATIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY, maxY = Double.NEGATIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY, maxZ = Double.NEGATIVE_INFINITY;
+
+        for (Point3D v : vertexBuffer) {
+            minX = Math.min(minX, v.getX());
+            minY = Math.min(minY, v.getY());
+            minZ = Math.min(minZ, v.getZ());
+            maxX = Math.max(maxX, v.getX());
+            maxY = Math.max(maxY, v.getY());
+            maxZ = Math.max(maxZ, v.getZ());
+        }
+
+        this.pivot = new Point3D((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2);
     }
 }
