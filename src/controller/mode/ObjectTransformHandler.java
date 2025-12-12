@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 
 import controller.input.InputState;
 import model.Axis;
+import model.ButterflyCurve;
+import model.CubicSpline;
 import model.Solid;
 import model.Transformable;
 import renderer.Renderer3D;
@@ -72,6 +74,19 @@ public class ObjectTransformHandler implements ModeHandler {
             renderer.setActiveSolid(null);
         }
 
+        /*if(solid instanceof CubicSpline c) {
+            if(input.isKeyJustPressed(KeyEvent.VK_LEFT)) {
+                
+            }
+        }else if(solid instanceof ButterflyCurve b) {
+            if(input.isKeyJustPressed(KeyEvent.VK_LEFT)) {
+                b.minusSegments();
+            }
+            if(input.isKeyJustPressed(KeyEvent.VK_RIGHT)) {
+                b.plusSegments();
+            }
+        }*/
+
         if(pressedKeyPair.transformKey == 0 && pressedKeyPair.axisKey == 0 && 
             input.isButtonJustPressed(MouseEvent.BUTTON1) && solid instanceof Transformable) {
             renderer.setSelectedSolid(solid);
@@ -111,7 +126,8 @@ public class ObjectTransformHandler implements ModeHandler {
                 Point2D solidPivot2D = renderer.getSelectedSolidPivot();
                 renderer.setTransformingLine(new Vec2D(input.getMouseX(), input.getMouseY()));
                 renderer.getSelectedSolid().setTransform(transform(renderer.getSelectedSolid(),
-                MathUtils.length(input.getMouseX(), input.getMouseY(), solidPivot2D.getX(), solidPivot2D.getY())));
+                MathUtils.lengthDir(input.getMouseX(), input.getMouseY(), solidPivot2D.getX(), solidPivot2D.getY())));
+                setActiveAxis(pressedKeyPair.axisKey);
 
                 if(input.isButtonJustPressed(MouseEvent.BUTTON1)) {
                     clear();
@@ -155,8 +171,10 @@ public class ObjectTransformHandler implements ModeHandler {
         Vec3D cur = null;
         if(pressedKeyPair.transformKey == KeyEvent.VK_S) {
             cur = scale;
+            value = Math.abs(value);
         } else if(pressedKeyPair.transformKey == KeyEvent.VK_R) {
             cur = rotation;
+            value = Math.abs(value);
         } else if(pressedKeyPair.transformKey == KeyEvent.VK_G) {
             cur = position;
         }

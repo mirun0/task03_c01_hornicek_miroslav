@@ -1,6 +1,7 @@
 package controller;
 
 import model.Axis;
+import model.ButterflyCurve;
 import model.Cube;
 import model.CubicSpline;
 import model.Cylinder;
@@ -48,15 +49,41 @@ public class SceneBuilder {
         //cylinder.setColor(0xffff00);
         scene.addSolid(cylinder);
 
-        Solid curve = new CubicSpline(Cubic.BEZIER,
+        // CURVES
+
+        Solid butterfly = new ButterflyCurve(100);
+        butterfly.setTransform(new Vec3D(0, 10, 5), new Vec3D(Math.toRadians(90), 0, 0), new Vec3D(1));
+        scene.addSolid(butterfly);
+
+        Solid bezier = new CubicSpline(Cubic.BEZIER,
             new Point3D(0, 0, 0),
             new Point3D(1, 2, 1),
             new Point3D(3, 2, 2),
             new Point3D(4, 5, 10),
             80
         );
-        //curve.setColor(0xff0ff0);
-        scene.addSolid(curve);
+        bezier.setTransform(new Vec3D(0), new Vec3D(0), new Vec3D(1));
+        scene.addSolid(bezier);
+
+        Solid ferguson = new CubicSpline(Cubic.FERGUSON,
+            new Point3D(5, 0, 0),
+            new Point3D(6, 2, 1),
+            new Point3D(8, 2, 2),
+            new Point3D(9, 5, 10),
+            80
+        );
+        ferguson.setTransform(new Vec3D(0), new Vec3D(0), new Vec3D(1));
+        scene.addSolid(ferguson);
+
+        Solid coons = new CubicSpline(Cubic.COONS,
+            new Point3D(10, 0, 0),
+            new Point3D(11, 2, 1),
+            new Point3D(13, 2, 2),
+            new Point3D(14, 5, 10),
+            80
+        );
+        coons.setTransform(new Vec3D(0), new Vec3D(0), new Vec3D(1));
+        scene.addSolid(coons);
     }
 
     private void buildAxes() {

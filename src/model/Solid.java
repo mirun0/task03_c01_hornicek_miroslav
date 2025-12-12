@@ -74,10 +74,21 @@ public abstract class Solid {
     }
     
     public Mat4 getTransform() {
-        Mat4 transform = new Mat4Scale(scale)
-            .mul(new Mat4RotXYZ(rotation.getX(), rotation.getY(), rotation.getZ()))
+
+        if(pivot == null) {
+            return new Mat4RotXYZ(rotation.getX(), rotation.getY(), rotation.getZ())
+            .mul(new Mat4Scale(scale))
             .mul(new Mat4Transl(position));
-        return transform;
+        }
+
+        Mat4 pivotTranslate  = new Mat4Transl(pivot.getX(), pivot.getY(), pivot.getZ());
+        Mat4 backPivotTranslate  = new Mat4Transl(-pivot.getX(), -pivot.getY(), -pivot.getZ());
+
+        Mat4 R = new Mat4RotXYZ(rotation.getX(), rotation.getY(), rotation.getZ());
+        Mat4 S = new Mat4Scale(scale);
+        Mat4 T = new Mat4Transl(position);
+
+        return backPivotTranslate.mul(R).mul(S).mul(pivotTranslate).mul(T);
     }
 
     public List<Point3D> getVertexBuffer() {
