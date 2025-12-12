@@ -3,7 +3,6 @@ package model;
 import transforms.Cubic;
 import transforms.Mat4;
 import transforms.Point3D;
-import transforms.Vec3D;
 
 public class CubicSpline extends Solid implements Transformable {
 

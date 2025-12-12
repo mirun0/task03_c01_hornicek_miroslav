@@ -7,8 +7,6 @@ import java.util.Map.Entry;
 
 import controller.input.InputState;
 import model.Axis;
-import model.ButterflyCurve;
-import model.CubicSpline;
 import model.Solid;
 import model.Transformable;
 import renderer.Renderer3D;
@@ -126,7 +124,7 @@ public class ObjectTransformHandler implements ModeHandler {
                 Point2D solidPivot2D = renderer.getSelectedSolidPivot();
                 renderer.setTransformingLine(new Vec2D(input.getMouseX(), input.getMouseY()));
                 renderer.getSelectedSolid().setTransform(transform(renderer.getSelectedSolid(),
-                MathUtils.lengthDir(input.getMouseX(), input.getMouseY(), solidPivot2D.getX(), solidPivot2D.getY())));
+                MathUtils.lengthDir(input.getMouseX(), solidPivot2D.getX())));
                 setActiveAxis(pressedKeyPair.axisKey);
 
                 if(input.isButtonJustPressed(MouseEvent.BUTTON1)) {
